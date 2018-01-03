@@ -23,10 +23,9 @@ class MoviesController < ApplicationController
         @all_ratings.each do |rating|
           if @selected_ratings[rating.to_sym] == '1'
             request << "rating = '#{rating}' OR "
-            print request
           end
         end
-        request << "0"
+        request = request.chomp(" OR ")
 
         @movies = Movie.where(request)
       else
