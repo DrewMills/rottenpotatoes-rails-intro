@@ -41,9 +41,9 @@ class MoviesController < ApplicationController
 
     # Redirect to maintain REST
     if !(params[:sort].present? && params[:ratings].present?)
-      # flash.keep
-      # redirect_to movies_path(sort: session[:sort], ratings: session[:ratings], utf8: "✓")
-      # return
+      flash.keep
+      redirect_to movies_path(sort: session[:sort], ratings: session[:ratings], utf8: "✓")
+      return
     end
 
     # Get required data from database
