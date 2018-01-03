@@ -15,31 +15,35 @@ class MoviesController < ApplicationController
   end
 
   def index
+    # session.clear
     @all_ratings = ['G','PG','PG-13','R']
     @selected_ratings = ["G"=>"1", "PG"=>"1", "PG-13"=>"1", "R"=>"1"]
 
     # Set visible ratings, default all
     if params[:ratings].present?
       @selected_ratings = params[:ratings]
-      session[:ratings] = @selected_ratings
     elsif session[:ratings].present?
       @selected_ratings = session[:ratings]
+    else
+      @selected_ratings = nil
     end
+    session[:ratings] = @selected_ratings
 
     # Set sort column, default id
-    @sort_column = "id"
     if params[:sort].present?
       @sort_column = params[:sort]
-      session[:sort] = @sort_column
     elsif session[:sort].present?
       @sort_column = session[:sort]
+    else
+      @sort_column = "id"
     end
+    session[:sort] = @sort_column
 
     # Redirect to maintain REST
     if !(params[:sort].present? && params[:ratings].present?)
-      flash.keep
-      redirect_to movies_path(sort: session[:sort], ratings: session[:ratings], utf8: "✓")
-      return
+      # flash.keep
+      # redirect_to movies_path(sort: session[:sort], ratings: session[:ratings], utf8: "✓")
+      # return
     end
 
     # Get required data from database
