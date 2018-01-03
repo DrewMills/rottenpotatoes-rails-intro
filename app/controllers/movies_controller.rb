@@ -25,7 +25,7 @@ class MoviesController < ApplicationController
     elsif session[:ratings].present?
       @selected_ratings = session[:ratings]
     else
-      @selected_ratings = nil
+      @selected_ratings = @all_ratings
     end
     session[:ratings] = @selected_ratings
 
