@@ -11,10 +11,26 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @all_ratings = ['G','PG','PG-13','R']
+    @selected_ratings = @all_ratings
+
     if params[:sort]
       @movies = Movie.order("#{params[:sort]} ASC")
-    else
-      @movies = Movie.all
+    elsif params[:ratings]
+      @selected_ratings = params[:ratings]
+        request = ""
+
+        @all_ratings.each do |rating|
+          if @selected_ratings[rating.to_sym] == '1'
+            request << "rating = '#{rating}' OR "
+            print request
+          end
+        end
+        request << "0"
+
+        @movies = Movie.where(request)
+      else
+        @movies = Movie.all
     end
   end
 
