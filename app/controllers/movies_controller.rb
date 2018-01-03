@@ -16,7 +16,7 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = ['G','PG','PG-13','R']
-    @selected_ratings = ["G"=>"1", "PG"=>"1", "PG-13"=>"1", "R"=>"1"]
+    @selected_ratings = {"G"=>"1", "PG"=>"1", "PG-13"=>"1", "R"=>"1"}
 
     # Set visible ratings, default all
     if params[:ratings].present?
