@@ -15,7 +15,6 @@ class MoviesController < ApplicationController
   end
 
   def index
-    # session.clear
     @all_ratings = ['G','PG','PG-13','R']
     @selected_ratings = ["G"=>"1", "PG"=>"1", "PG-13"=>"1", "R"=>"1"]
 
@@ -24,8 +23,6 @@ class MoviesController < ApplicationController
       @selected_ratings = params[:ratings]
     elsif session[:ratings].present?
       @selected_ratings = session[:ratings]
-    else
-      @selected_ratings = @all_ratings
     end
     session[:ratings] = @selected_ratings
 
@@ -48,10 +45,8 @@ class MoviesController < ApplicationController
 
     # Get required data from database
     request = ""
-    @all_ratings.each do |rating|
-      if @selected_ratings[rating] == '1'
-        request << "rating = '#{rating}' OR "
-      end
+    @selected_ratings.each do |key, value|
+      request << "rating = '#{key}' OR "
     end
     request = request.chomp(" OR ")
     @movies = Movie.where(request).order("#{@sort_column} ASC")
