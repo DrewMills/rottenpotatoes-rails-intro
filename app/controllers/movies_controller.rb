@@ -10,27 +10,47 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
 
+  def filter
+    
+  end
+
   def index
     @all_ratings = ['G','PG','PG-13','R']
-    @selected_ratings = @all_ratings
+    @selected_ratings = ["G"=>"1", "PG"=>"1", "PG-13"=>"1", "R"=>"1"]
 
-    if params[:sort]
-      @movies = Movie.order("#{params[:sort]} ASC")
-    elsif params[:ratings]
+    # Set visible ratings, default all
+    if params[:ratings].present?
       @selected_ratings = params[:ratings]
-        request = ""
-
-        @all_ratings.each do |rating|
-          if @selected_ratings[rating.to_sym] == '1'
-            request << "rating = '#{rating}' OR "
-          end
-        end
-        request = request.chomp(" OR ")
-
-        @movies = Movie.where(request)
-      else
-        @movies = Movie.all
+      session[:ratings] = @selected_ratings
+    elsif session[:ratings].present?
+      @selected_ratings = session[:ratings]
     end
+
+    # Set sort column, default id
+    @sort_column = "id"
+    if params[:sort].present?
+      @sort_column = params[:sort]
+      session[:sort] = @sort_column
+    elsif session[:sort].present?
+      @sort_column = session[:sort]
+    end
+
+    # Redirect to maintain REST
+    if !(params[:sort].present? && params[:ratings].present?)
+      flash.keep
+      redirect_to movies_path(sort: session[:sort], ratings: session[:ratings], utf8: "✓")
+      return
+    end
+
+    # Get required data from database
+    request = ""
+    @all_ratings.each do |rating|
+      if @selected_ratings[rating] == '1'
+        request << "rating = '#{rating}' OR "
+      end
+    end
+    request = request.chomp(" OR ")
+    @movies = Movie.where(request).order("#{@sort_column} ASC")
   end
 
   def new
