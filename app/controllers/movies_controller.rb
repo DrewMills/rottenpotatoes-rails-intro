@@ -29,6 +29,11 @@ class MoviesController < ApplicationController
     # Set sort column, default id
     if params[:sort].present?
       @sort_column = params[:sort]
+      if @sort_column == 'title'
+        @title_header = 'hilite'
+      elsif @sort_column == 'release_date'
+        @release_date_header = 'hilite'
+      end
     elsif session[:sort].present?
       @sort_column = session[:sort]
     else
